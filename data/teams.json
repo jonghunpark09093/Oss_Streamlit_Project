@@ -1,0 +1,75 @@
+{
+  "KC": {
+    "name": "Kansas City Chiefs",
+    "city": "캔자스시티, 미주리",
+    "conference": "AFC West",
+    "color": "#E31837",
+    "emoji": "🔴",
+    "description": "패트릭 마홈스를 중심으로 한 최강 패싱 오펜스와 전략적인 플레이 콜링으로 최근 NFL을 지배하고 있는 팀입니다. 슈퍼볼 단골 출전팀.",
+    "reason": "당신은 전략적이고 승부욕이 강하며, 결국엔 우승을 원하는 타입입니다. 치프스처럼 화려하면서도 치밀한 당신에게 딱 맞는 팀입니다!"
+  },
+  "SF": {
+    "name": "San Francisco 49ers",
+    "city": "샌프란시스코, 캘리포니아",
+    "conference": "NFC West",
+    "color": "#AA0000",
+    "emoji": "🌉",
+    "description": "강력한 런닝 게임과 철벽 수비를 갖춘 균형 잡힌 팀. 카일 샤나한 감독의 체계적인 시스템이 강점이며, 꾸준히 NFC 정상을 다툽니다.",
+    "reason": "당신은 팀워크와 균형을 중시하며 냉철하게 판단하는 타입입니다. 체계적인 시스템 속에서 최고의 성과를 내는 49ers와 잘 맞습니다!"
+  },
+  "DAL": {
+    "name": "Dallas Cowboys",
+    "city": "댈러스, 텍사스",
+    "conference": "NFC East",
+    "color": "#003594",
+    "card_color": "#869397",
+    "emoji": "⭐",
+    "description": "America's Team이라는 별명을 가진 NFL 최고 인기 팀. 화려한 AT&T 스타디움과 강력한 팬덤, 엔터테인먼트 요소가 넘칩니다.",
+    "reason": "당신은 화려함과 엔터테인먼트를 즐기며 대중의 관심을 사랑하는 타입입니다. NFL에서 가장 유명한 팀, 카우보이스가 당신의 팀입니다!"
+  },
+  "GB": {
+    "name": "Green Bay Packers",
+    "city": "그린베이, 위스콘신",
+    "conference": "NFC North",
+    "color": "#203731",
+    "emoji": "🧀",
+    "description": "NFL 유일의 비영리 팬 소유 구단. 소도시에서 쌓아 올린 엄청난 전통과 레전드 QB들의 계보, 람보 필드의 혹독한 홈 어드밴티지로 유명합니다.",
+    "reason": "당신은 전통과 팬과의 유대감을 중시하며 팀을 위해 묵묵히 헌신하는 타입입니다. 팬이 곧 구단주인 패커스가 당신과 딱입니다!"
+  },
+  "PIT": {
+    "name": "Pittsburgh Steelers",
+    "city": "피츠버그, 펜실베이니아",
+    "conference": "AFC North",
+    "color": "#101820",
+    "emoji": "⚙️",
+    "description": "NFL 최다 타이 슈퍼볼 우승(6회)의 강팀. 강철 도시 피츠버그를 닮은 강력한 수비와 런닝 게임, 레전드 선수들의 역사가 살아있습니다.",
+    "reason": "당신은 공격적이고 강인하며 묵묵히 힘을 쌓는 타입입니다. 철의 도시처럼 단단한 스틸러스와 당신의 성향이 완벽히 일치합니다!"
+  },
+  "MIA": {
+    "name": "Miami Dolphins",
+    "city": "마이애미, 플로리다",
+    "conference": "AFC East",
+    "color": "#008E97",
+    "emoji": "🐬",
+    "description": "NFL에서 가장 화려하고 스피드 있는 패싱 오펜스를 자랑합니다. 따뜻한 마이애미 태양 아래 빠르고 역동적인 플레이가 특징.",
+    "reason": "당신은 화려하고 역동적이며 항상 새로운 것을 추구하는 타입입니다. 스피드와 엔터테인먼트로 가득한 돌핀스가 당신에게 딱 맞습니다!"
+  },
+  "BUF": {
+    "name": "Buffalo Bills",
+    "city": "버팔로, 뉴욕",
+    "conference": "AFC East",
+    "color": "#00338D",
+    "emoji": "🦬",
+    "description": "NFL 최고의 팬덤 중 하나인 Bills Mafia로 유명합니다. 혹독한 버팔로 겨울 속 압도적인 홈 어드밴티지와 조쉬 알렌의 강력한 리더십이 강점.",
+    "reason": "당신은 팬과의 유대감을 중시하고 역경 속에서도 강인하게 버티는 타입입니다. Bills Mafia의 열정과 당신의 끈기가 완벽히 맞닿아 있습니다!"
+  },
+  "LV": {
+    "name": "Las Vegas Raiders",
+    "city": "라스베이거스, 네바다",
+    "conference": "AFC West",
+    "color": "#000000",
+    "emoji": "🏴‍☠️",
+    "description": "검정과 은색의 강렬한 팀 컬러, 반항적이고 독특한 팀 문화가 특징. 화려한 라스베이거스의 얼리전트 스타디움은 NFL에서 가장 세련된 경기장입니다.",
+    "reason": "당신은 독특하고 반항적이며 남들과 다른 길을 걷는 것을 즐기는 타입입니다. NFL에서 가장 개성 강한 레이더스가 당신의 팀입니다!"
+  }
+}

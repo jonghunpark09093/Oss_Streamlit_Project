@@ -1,0 +1,92 @@
+[
+  {
+    "question": "평소 내 성격에 가장 가까운 것은?",
+    "options": [
+      {"text": "공격적이고 승부욕이 강하다",         "scores": {"KC": 2, "PIT": 2, "LV": 1}},
+      {"text": "팀워크를 중시하고 묵묵히 한다",       "scores": {"SF": 2, "GB": 2, "BUF": 1}},
+      {"text": "화려하고 엔터테인먼트를 즐긴다",      "scores": {"DAL": 2, "MIA": 1, "LV": 1}},
+      {"text": "전략적이고 냉철하게 판단한다",        "scores": {"KC": 2, "SF": 2, "PIT": 1}}
+    ]
+  },
+  {
+    "question": "좋아하는 날씨는?",
+    "options": [
+      {"text": "뜨겁고 강렬한 여름",    "scores": {"MIA": 2, "LV": 2, "DAL": 1}},
+      {"text": "춥고 거친 겨울",        "scores": {"BUF": 2, "GB": 2, "PIT": 1}},
+      {"text": "맑고 화창한 날",        "scores": {"SF": 2, "KC": 1, "DAL": 1}},
+      {"text": "흐리고 습한 날",        "scores": {"PIT": 2, "BUF": 1, "GB": 1}}
+    ]
+  },
+  {
+    "question": "내가 추구하는 플레이 스타일은?",
+    "options": [
+      {"text": "강력한 런닝 게임 (땅 싸움)",     "scores": {"PIT": 2, "SF": 2, "BUF": 1}},
+      {"text": "화려한 패싱 오펜스",             "scores": {"KC": 2, "MIA": 2, "DAL": 1}},
+      {"text": "철벽 수비",                      "scores": {"SF": 2, "PIT": 2, "BUF": 1}},
+      {"text": "균형 잡힌 전천후 플레이",        "scores": {"SF": 2, "GB": 2, "KC": 1}}
+    ]
+  },
+  {
+    "question": "살고 싶은 도시 유형은?",
+    "options": [
+      {"text": "뉴욕, LA 같은 대도시",               "scores": {"DAL": 2, "MIA": 1, "LV": 1}},
+      {"text": "그린베이, 버팔로 같은 소도시",        "scores": {"GB": 2, "BUF": 2, "PIT": 1}},
+      {"text": "마이애미, 댈러스 같은 선벨트 도시",   "scores": {"MIA": 2, "DAL": 2, "LV": 1}},
+      {"text": "시카고, 피츠버그 같은 공업 도시",     "scores": {"PIT": 2, "BUF": 2, "GB": 1}}
+    ]
+  },
+  {
+    "question": "팀의 역사에서 가장 중요한 것은?",
+    "options": [
+      {"text": "화려한 슈퍼볼 우승 트로피",        "scores": {"KC": 2, "PIT": 2, "SF": 1}},
+      {"text": "꾸준한 플레이오프 진출",            "scores": {"SF": 2, "KC": 1, "GB": 1}},
+      {"text": "전설적인 레전드 선수들",            "scores": {"GB": 2, "PIT": 2, "DAL": 1}},
+      {"text": "팬들과의 끈끈한 유대감",            "scores": {"GB": 2, "BUF": 2, "SF": 1}}
+    ]
+  },
+  {
+    "question": "선호하는 경기장 분위기는?",
+    "options": [
+      {"text": "엄청난 함성의 압도적 홈 어드밴티지",  "scores": {"BUF": 2, "KC": 2, "GB": 1}},
+      {"text": "세련되고 현대적인 최신 스타디움",      "scores": {"DAL": 2, "LV": 2, "MIA": 1}},
+      {"text": "거친 날씨 속 야외 전통 경기장",        "scores": {"BUF": 2, "GB": 2, "PIT": 1}},
+      {"text": "화려한 쇼와 이벤트가 가득한 경기장",   "scores": {"DAL": 2, "MIA": 2, "LV": 1}}
+    ]
+  },
+  {
+    "question": "마음에 드는 팀 컬러 스타일은?",
+    "options": [
+      {"text": "강렬한 원색 (빨강 + 파랑)",       "scores": {"BUF": 2, "KC": 1, "SF": 1}},
+      {"text": "고급스러운 조합 (금 + 검정)",      "scores": {"KC": 2, "LV": 2, "SF": 1}},
+      {"text": "클래식한 조합 (녹색 + 금)",        "scores": {"GB": 2, "SF": 1, "DAL": 1}},
+      {"text": "강렬한 모노톤 (검정 + 은)",        "scores": {"LV": 2, "PIT": 2, "BUF": 1}}
+    ]
+  },
+  {
+    "question": "쿼터백에게 기대하는 스타일은?",
+    "options": [
+      {"text": "발로 뛰는 이중위협 모바일 QB",      "scores": {"SF": 2, "KC": 1, "MIA": 1}},
+      {"text": "정확한 패스의 클래식 포켓 QB",      "scores": {"KC": 2, "GB": 2, "DAL": 1}},
+      {"text": "리더십 넘치는 베테랑 QB",           "scores": {"PIT": 2, "GB": 2, "BUF": 1}},
+      {"text": "잠재력 넘치는 신예 QB",             "scores": {"MIA": 2, "LV": 2, "BUF": 1}}
+    ]
+  },
+  {
+    "question": "가장 중요하게 생각하는 포지션은?",
+    "options": [
+      {"text": "러닝백 (파워와 땅 싸움)",              "scores": {"PIT": 2, "SF": 2, "BUF": 1}},
+      {"text": "와이드리시버 (스피드와 기술)",          "scores": {"KC": 2, "DAL": 2, "MIA": 1}},
+      {"text": "디펜시브 라인 (압박과 파워)",           "scores": {"PIT": 2, "SF": 2, "LV": 1}},
+      {"text": "라인배커 (전략과 힘의 조화)",           "scores": {"KC": 2, "GB": 2, "SF": 1}}
+    ]
+  },
+  {
+    "question": "나의 시즌 목표와 가장 가까운 것은?",
+    "options": [
+      {"text": "슈퍼볼 우승 아니면 의미없다",         "scores": {"KC": 2, "PIT": 2, "SF": 1}},
+      {"text": "매년 안정적인 플레이오프 진출",        "scores": {"GB": 2, "SF": 2, "BUF": 1}},
+      {"text": "팬들에게 즐거움을 주는 시즌",          "scores": {"DAL": 2, "MIA": 2, "GB": 1}},
+      {"text": "젊은 선수 육성과 미래 준비",           "scores": {"MIA": 2, "BUF": 2, "LV": 1}}
+    ]
+  }
+]
