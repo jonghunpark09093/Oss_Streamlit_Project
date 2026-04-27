@@ -25,3 +25,7 @@ ENV/
 
 # 배포 관련
 .streamlit/secrets.toml
+
+# 로컬 문서
+구현계획.txt
+데모영상_대본.txt

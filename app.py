@@ -1,26 +1,39 @@
-import base64
-import json
-import streamlit as st
-from pathlib import Path
+import base64          # 이미지 파일을 HTML에 직접 삽입하기 위한 base64 인코딩
+import json             # questions.json, teams.json 파일 파싱
+import streamlit as st  # 웹 앱 프레임워크
+from pathlib import Path  # 플랫폼 독립적인 파일 경로 처리
 
+# ─────────────────────────────────────────────
+#  학생 정보 - 과제 필수 표시 항목
+# ─────────────────────────────────────────────
 STUDENT_ID   = "2021204039"
 STUDENT_NAME = "박종훈"
 
 # ─────────────────────────────────────────────
-#  사용자 계정 (아이디: 비밀번호)
+#  사용자 계정 - 로그인 비교 기준값
+#  실제 서비스라면 DB나 환경변수에 저장해야 하지만,
+#  과제 범위 내에서는 코드 내 dict로 관리
 # ─────────────────────────────────────────────
 USERS = {
-    "admin": "Nfl2025!",
-    "nfl":   "GoChiefs#7",
+    "admin": "Nfl2025!",   # 테스트용 기본 계정
+    "nfl":   "GoChiefs#7", # 추가 테스트 계정
 }
 
 # ─────────────────────────────────────────────
-#  캐싱 - 파일 I/O를 최초 1회만 수행
-#  Streamlit은 사용자 인터랙션마다 전체 스크립트를 재실행하므로
-#  @st.cache_data 없이는 매 렌더링마다 파일을 반복 읽게 됨
+#  캐싱 함수 - @st.cache_data 적용
+#
+#  Streamlit은 버튼 클릭, 라디오 선택 등 모든 인터랙션마다
+#  스크립트 전체를 처음부터 재실행한다.
+#  @st.cache_data를 붙이면 최초 1회 실행 결과를 메모리에 저장하고,
+#  이후 동일 인자로 호출 시 저장값을 즉시 반환하여 파일 I/O를 생략한다.
 # ─────────────────────────────────────────────
 @st.cache_data
 def load_image_base64(filename: str) -> str:
+    """
+    images/ 폴더의 이미지를 base64 문자열로 변환.
+    HTML <img src="data:image/...;base64,..."> 형태로 삽입하기 위해 사용.
+    이미지 인코딩은 비용이 크므로 캐싱 효과가 가장 뚜렷하다.
+    """
     path = Path(__file__).parent / "images" / filename
     with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode()
@@ -28,6 +41,11 @@ def load_image_base64(filename: str) -> str:
 
 @st.cache_data
 def load_questions() -> list:
+    """
+    data/questions.json 로딩.
+    10개 문항과 각 보기별 팀 점수 정보를 담고 있다.
+    퀴즈 진행 중 매 렌더링마다 파일을 읽지 않도록 캐싱.
+    """
     path = Path(__file__).parent / "data" / "questions.json"
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -35,6 +53,11 @@ def load_questions() -> list:
 
 @st.cache_data
 def load_teams() -> dict:
+    """
+    data/teams.json 로딩.
+    8개 팀의 이름, 컬러, 소개, 추천 이유 등 정보를 담고 있다.
+    결과 화면에서 매 렌더링마다 파일을 읽지 않도록 캐싱.
+    """
     path = Path(__file__).parent / "data" / "teams.json"
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -42,23 +65,32 @@ def load_teams() -> dict:
 
 # ─────────────────────────────────────────────
 #  세션 상태 초기화
+#  session_state는 Streamlit의 전역 상태 저장소.
+#  페이지 재실행 시에도 값이 유지되므로 로그인 상태,
+#  현재 페이지, 퀴즈 진행 상황 등을 저장하는 데 사용.
 # ─────────────────────────────────────────────
 def init_session():
     defaults = {
-        "logged_in": False,
-        "username":  "",
-        "page":      "login",   # login | intro | quiz | result
-        "current_q": 0,
-        "answers":   {},        # {문항번호: 선택텍스트} — 위젯 key와 별도 보관
-        "scores":    {},
+        "logged_in": False,   # 로그인 여부 - False면 로그인 화면만 접근 가능
+        "username":  "",      # 로그인한 사용자 아이디
+        "page":      "login", # 현재 페이지: login | intro | quiz | result
+        "current_q": 0,       # 현재 문항 번호 (0-indexed)
+        "answers":   {},      # {문항번호(int): 선택한 보기 텍스트(str)}
+                              # 위젯 key는 미렌더링 시 자동 소멸하므로
+                              # 별도 dict에 수동 저장하여 뒤로가기 기능 구현
+        "scores":    {},      # {팀코드: 누적점수} - 결과 계산용
     }
+    # 이미 초기화된 키는 덮어쓰지 않음 (페이지 재실행 시 상태 보존)
     for key, val in defaults.items():
         if key not in st.session_state:
             st.session_state[key] = val
 
 
 # ─────────────────────────────────────────────
-#  공통 헤더 - 학번/이름 표시 (필수 항목)
+#  공통 헤더 - 학번/이름 배너
+#  과제 요건: 앱 첫 화면에 반드시 표시
+#  로그인 화면의 중앙 컬럼 최상단에 위치하며,
+#  로그인 이후 화면에서는 표시하지 않음
 # ─────────────────────────────────────────────
 def show_header():
     st.markdown(
@@ -84,9 +116,15 @@ def show_header():
 # ─────────────────────────────────────────────
 #  페이지 1: 로그인
 # ─────────────────────────────────────────────
+
 def _player_img_html(filename: str) -> str:
+    """
+    선수 이미지를 고정 높이 컨테이너에 꽉 차게 표시하는 HTML 생성.
+    object-fit: cover로 비율을 유지하면서 영역을 채운다.
+    base64 인코딩된 이미지를 HTML에 직접 삽입하여 외부 URL 없이 표시.
+    """
     b64 = load_image_base64(filename)
-    ext = filename.rsplit(".", 1)[-1]
+    ext = filename.rsplit(".", 1)[-1]  # 확장자 추출 (jpg / png)
     return f"""
     <div style='
         height: 540px;
@@ -100,13 +138,15 @@ def _player_img_html(filename: str) -> str:
 
 
 def page_login():
+    # 3컬럼 레이아웃: [선수 이미지 | 로그인 폼 | 선수 이미지]
+    # layout="wide" 설정 덕분에 양쪽 이미지가 넓게 표시됨
     left_col, center_col, right_col = st.columns([1, 1.4, 1])
 
     with left_col:
         st.markdown(_player_img_html("player_left.jpg"), unsafe_allow_html=True)
 
     with center_col:
-        show_header()
+        show_header()  # 학번/이름 배너 (과제 필수 항목)
         st.title("🏈 나에게 맞는 NFL 팀은?")
         st.markdown(
             "10가지 성향 질문에 답하면 "
@@ -115,18 +155,23 @@ def page_login():
         st.divider()
 
         st.subheader("🔐 로그인")
+        # st.form: 내부 위젯 변경 시 즉시 rerun되지 않고
+        # 제출 버튼을 눌러야만 처리됨 → 불필요한 rerun 방지
         with st.form("login_form"):
             username  = st.text_input("아이디")
-            password  = st.text_input("비밀번호", type="password")
+            password  = st.text_input("비밀번호", type="password")  # 입력값 마스킹
             submitted = st.form_submit_button("로그인", use_container_width=True)
 
         if submitted:
+            # USERS dict에서 아이디로 조회 후 비밀번호 일치 여부 확인
             if USERS.get(username) == password:
+                # 로그인 성공: 상태 저장 후 intro 페이지로 이동
                 st.session_state.logged_in = True
                 st.session_state.username  = username
                 st.session_state.page      = "intro"
-                st.rerun()
+                st.rerun()  # 즉시 페이지 재실행으로 화면 전환
             else:
+                # 로그인 실패: 오류 메시지 출력 (페이지는 유지)
                 st.error("❌ 아이디 또는 비밀번호가 올바르지 않습니다.")
 
         st.caption("테스트 계정  |  아이디: admin  /  비밀번호: Nfl2025!")
@@ -139,7 +184,8 @@ def page_login():
 #  페이지 2: 테스트 소개
 # ─────────────────────────────────────────────
 def page_intro():
-    # 두 캐싱 함수 모두 미리 호출 → 이후 quiz/result에서 파일 I/O 없이 재사용
+    # 퀴즈/결과 페이지에서 쓸 데이터를 여기서 미리 캐시에 올림
+    # → 이후 load_questions(), load_teams() 호출 시 파일 I/O 없이 재사용
     questions = load_questions()
     load_teams()
 
@@ -155,18 +201,20 @@ def page_intro():
         "- 8개 팀 중 당신과 가장 잘 맞는 팀을 찾아보세요!"
     )
 
+    # 추천 후보 팀 목록을 4열 그리드로 표시
     st.markdown("##### 추천 후보 팀")
     teams = load_teams()
     cols  = st.columns(4)
     for i, (_, team) in enumerate(teams.items()):
         cols[i % 4].markdown(
-            f"{team['emoji']} {team['name'].split()[-1]}"
+            f"{team['emoji']} {team['name'].split()[-1]}"  # 팀명 마지막 단어만 표시
         )
 
     st.divider()
     col1, col2 = st.columns([4, 1])
     with col1:
         if st.button("✅ 테스트 시작!", type="primary", use_container_width=True):
+            # 이전 테스트 기록 초기화 후 퀴즈 시작
             st.session_state.page      = "quiz"
             st.session_state.current_q = 0
             st.session_state.answers   = {}
@@ -174,6 +222,7 @@ def page_intro():
             st.rerun()
     with col2:
         if st.button("로그아웃", use_container_width=True):
+            # session_state 전체 삭제 → 로그인 화면으로 복귀
             for key in list(st.session_state.keys()):
                 del st.session_state[key]
             st.rerun()
@@ -182,20 +231,33 @@ def page_intro():
 # ─────────────────────────────────────────────
 #  페이지 3: 퀴즈 풀이
 # ─────────────────────────────────────────────
+
 def _calc_scores(questions: list, answers: dict) -> dict:
-    """저장된 answers dict로 점수를 한 번에 계산"""
+    """
+    저장된 answers dict를 순회하며 팀별 점수를 합산.
+
+    answers = {0: "공격적이고 승부욕이 강하다", 1: "뜨겁고 강렬한 여름", ...}
+    각 보기의 "scores" 필드에는 {"KC": 2, "PIT": 2, "LV": 1} 형태로
+    팀별 점수가 정의되어 있으며, 해당 값을 누적 합산한다.
+
+    마지막 문항 완료 시 단 1회만 호출되어 최종 scores를 계산한다.
+    """
     scores = {}
     for q_idx, q in enumerate(questions):
-        ans = answers.get(q_idx)
+        ans = answers.get(q_idx)  # 해당 문항의 선택 텍스트
         if ans:
             texts = [o["text"] for o in q["options"]]
             if ans in texts:
+                # 선택된 보기의 팀별 점수를 누적
                 for team_key, pts in q["options"][texts.index(ans)]["scores"].items():
                     scores[team_key] = scores.get(team_key, 0) + pts
     return scores
 
 
 def page_quiz():
+    # 라디오 버튼 글씨 크기를 CSS로 확대 (기본값 1rem → 1.15rem)
+    # Streamlit이 제공하는 직접적인 글씨 크기 옵션이 없으므로
+    # unsafe_allow_html로 커스텀 스타일 주입
     st.markdown(
         """
         <style>
@@ -209,9 +271,10 @@ def page_quiz():
     )
 
     questions = load_questions()
-    idx       = st.session_state.current_q
-    total     = len(questions)
+    idx       = st.session_state.current_q  # 현재 문항 번호 (0-indexed)
+    total     = len(questions)              # 전체 문항 수 (10)
 
+    # 진행률 = 현재 문항 번호 / 전체 문항 수 (0.0 ~ 1.0)
     st.progress(idx / total, text=f"진행 상황: {idx} / {total}")
     st.markdown(f"#### Q{idx + 1}. {questions[idx]['question']}")
     st.divider()
@@ -219,10 +282,14 @@ def page_quiz():
     options  = questions[idx]["options"]
     opt_text = [o["text"] for o in options]
 
-    # 이전에 저장된 답이 있으면 index로 복원 (뒤로가기 시 선택 유지)
+    # 뒤로가기로 돌아왔을 때 이전 선택을 라디오에 복원
+    # session_state.answers에 저장된 텍스트를 index로 변환하여 default로 지정
+    # (Streamlit 위젯 key는 미렌더링 시 자동 소멸하므로 별도 저장 필요)
     saved       = st.session_state.answers.get(idx)
     default_idx = opt_text.index(saved) if saved in opt_text else None
 
+    # 8번 문항(idx=7)에만 쿼터백 설명 패널 표시
+    # NFL에 익숙하지 않은 사용자를 위한 포지션 안내
     if idx == 7:
         radio_col, info_col = st.columns([3, 2])
         with radio_col:
@@ -249,27 +316,35 @@ def page_quiz():
                 unsafe_allow_html=True,
             )
     else:
+        # 나머지 문항은 라디오만 표시
         selected = st.radio("보기를 선택하세요:", opt_text, index=default_idx, key=f"q_{idx}")
 
     st.divider()
     col_prev, col_next = st.columns(2)
 
     with col_prev:
+        # 첫 번째 문항에서는 이전 버튼 미표시
         if idx > 0:
             if st.button("← 이전", use_container_width=True):
+                # 현재 선택값을 answers에 저장 후 이전 문항으로 이동
                 if selected:
                     st.session_state.answers[idx] = selected
                 st.session_state.current_q -= 1
                 st.rerun()
 
     with col_next:
+        # 마지막 문항에서는 "결과 보기"로 버튼 레이블 변경
         label = "결과 보기 🏆" if idx + 1 >= total else "다음 ➡️"
+        # 보기를 선택하지 않으면 버튼 비활성화
         if st.button(label, type="primary", disabled=(selected is None), use_container_width=True):
-            st.session_state.answers[idx] = selected
+            st.session_state.answers[idx] = selected  # 현재 답변 저장
+
             if idx + 1 >= total:
+                # 마지막 문항: 전체 answers로 최종 점수 계산 후 결과 페이지로
                 st.session_state.scores = _calc_scores(questions, st.session_state.answers)
                 st.session_state.page   = "result"
             else:
+                # 다음 문항으로 이동
                 st.session_state.current_q += 1
             st.rerun()
 
@@ -282,12 +357,13 @@ def page_quiz():
 # ─────────────────────────────────────────────
 def page_result():
     teams  = load_teams()
-    scores = st.session_state.scores
+    scores = st.session_state.scores  # _calc_scores()가 계산한 팀별 점수
 
-    # 최고 점수 계산 및 동점 팀 목록 추출
-    top_score  = max(scores.values())
-    top_keys   = [k for k, v in scores.items() if v == top_score and k in teams]
-    is_tie     = len(top_keys) > 1
+    # 최고 점수 추출 후 동점 팀 전체를 리스트로 수집
+    # 단독 1위면 카드 1개, 동점이면 카드 여러 개 표시
+    top_score = max(scores.values())
+    top_keys  = [k for k, v in scores.items() if v == top_score and k in teams]
+    is_tie    = len(top_keys) > 1
 
     if is_tie:
         st.title("🏆 당신과 잘 맞는 NFL 팀들!")
@@ -296,11 +372,17 @@ def page_result():
         st.title("🏆 추천 NFL 팀 결과!")
     st.divider()
 
-    # 결과 카드 (동점이면 카드 여러 개, 단독이면 1개)
+    # 동점 팀 수만큼 반복하여 결과 카드 렌더링
     for best_key in top_keys:
-        best       = teams[best_key]
+        best = teams[best_key]
+
+        # card_color: 팀 고유 컬러 사용
+        # DAL(Cowboys)처럼 로고와 팀 컬러가 유사할 경우
+        # teams.json의 "card_color" 필드로 별도 카드 색상 지정 가능
         card_color = best.get("card_color", best["color"])
 
+        # 팀 로고 이미지 로딩 (images/logo_{팀코드}.png)
+        # 파일이 없으면 예외 처리 후 이모지로 대체
         try:
             logo_b64  = load_image_base64(f"logo_{best_key}.png")
             logo_html = (
@@ -310,6 +392,8 @@ def page_result():
         except Exception:
             logo_html = f"<div style='font-size:4rem'>{best['emoji']}</div>"
 
+        # 결과 카드: flexbox로 [로고 | 팀명+정보] 좌우 배치
+        # background에 팀 컬러 + 22(hex, ~13% 투명도)로 은은한 배경 적용
         st.markdown(
             f"""
             <div style='
@@ -345,19 +429,23 @@ def page_result():
         if is_tie and best_key != top_keys[-1]:
             st.divider()
 
-    # 전체 점수 순위
+    # 전체 팀 점수 순위 (접기/펼치기)
     with st.expander("📊 전체 팀 점수 보기"):
+        # 점수 내림차순 정렬
         sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
         for rank, (key, score) in enumerate(sorted_scores, 1):
             if key in teams:
                 t = teams[key]
+                # 텍스트 막대 그래프: 최대 20칸 (10문항 × 최대 2점)
+                # "█" * score: 획득 점수만큼 채운 블록
+                # "░" * (20 - score): 나머지 빈 블록
                 bar = "█" * score + "░" * (20 - score)
                 st.markdown(
                     f"`{rank}위` {t['emoji']} **{t['name']}** &nbsp; "
                     f"`{score}점` &nbsp; `{bar}`"
                 )
 
-    # 팀 선정 기준 설명
+    # 팀 선정 기준 설명 (접기/펼치기)
     with st.expander("🏈 8개 팀 선정 근거 및 점수 산정 기준"):
         st.markdown("""
 **[ 팀 선정 원칙 ]**
@@ -422,6 +510,7 @@ NFL 32팀 중 아래 기준으로 8팀을 선발했습니다.
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🔄 다시 테스트하기", type="primary", use_container_width=True):
+            # 퀴즈 관련 상태 초기화 후 첫 문항부터 재시작
             st.session_state.page      = "quiz"
             st.session_state.current_q = 0
             st.session_state.answers   = {}
@@ -429,6 +518,7 @@ NFL 32팀 중 아래 기준으로 8팀을 선발했습니다.
             st.rerun()
     with col2:
         if st.button("🏠 처음으로", use_container_width=True):
+            # 소개 화면으로 복귀 (로그인 상태는 유지)
             st.session_state.page      = "intro"
             st.session_state.current_q = 0
             st.session_state.answers   = {}
@@ -437,21 +527,23 @@ NFL 32팀 중 아래 기준으로 8팀을 선발했습니다.
 
 
 # ─────────────────────────────────────────────
-#  메인
+#  메인 진입점
 # ─────────────────────────────────────────────
 def main():
     st.set_page_config(
         page_title="NFL 팀 추천 테스트",
         page_icon="🏈",
-        layout="wide",
+        layout="wide",  # 로그인 화면 양쪽 이미지를 위해 wide 레이아웃 사용
     )
 
     init_session()
 
+    # 로그인 여부로 접근 가능 페이지 제한
     if not st.session_state.logged_in:
         page_login()
         return
 
+    # 로그인 후 page 상태에 따라 화면 분기
     page = st.session_state.page
     if page == "intro":
         page_intro()
