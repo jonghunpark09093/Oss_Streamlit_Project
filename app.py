@@ -165,12 +165,14 @@ def page_login():
         if submitted:
             # USERS dict에서 아이디로 조회 후 비밀번호 일치 여부 확인
             if USERS.get(username) == password:
+                print(f"[LOGIN] 로그인 성공 - 사용자: {username}")
                 # 로그인 성공: 상태 저장 후 intro 페이지로 이동
                 st.session_state.logged_in = True
                 st.session_state.username  = username
                 st.session_state.page      = "intro"
                 st.rerun()  # 즉시 페이지 재실행으로 화면 전환
             else:
+                print(f"[LOGIN] 로그인 실패 - 사용자: {username}")
                 # 로그인 실패: 오류 메시지 출력 (페이지는 유지)
                 st.error("❌ 아이디 또는 비밀번호가 올바르지 않습니다.")
 
@@ -329,6 +331,7 @@ def page_quiz():
                 # 현재 선택값을 answers에 저장 후 이전 문항으로 이동
                 if selected:
                     st.session_state.answers[idx] = selected
+                print(f"[QUIZ] Q{idx+1} → Q{idx} 이전으로 이동")
                 st.session_state.current_q -= 1
                 st.rerun()
 
@@ -338,11 +341,13 @@ def page_quiz():
         # 보기를 선택하지 않으면 버튼 비활성화
         if st.button(label, type="primary", disabled=(selected is None), use_container_width=True):
             st.session_state.answers[idx] = selected  # 현재 답변 저장
+            print(f"[QUIZ] Q{idx+1} 선택: {selected}")
 
             if idx + 1 >= total:
                 # 마지막 문항: 전체 answers로 최종 점수 계산 후 결과 페이지로
                 st.session_state.scores = _calc_scores(questions, st.session_state.answers)
                 st.session_state.page   = "result"
+                print(f"[RESULT] 퀴즈 완료 - 점수: {st.session_state.scores}")
             else:
                 # 다음 문항으로 이동
                 st.session_state.current_q += 1
